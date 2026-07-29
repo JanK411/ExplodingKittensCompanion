@@ -1,0 +1,23 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        # compatibility (default) | wasmJs | js — see the ARG in the Dockerfile.
+        WEB_TARGET: ${WEB_TARGET:-compatibility}
+    image: exploding-kittens-companion:latest
+    container_name: exploding-kittens-companion
+    ports:
+      # http://localhost:8080 — override with PORT=... docker compose up
+      - "${PORT:-8080}:80"
+    # The image serves the bundle with nginx's stock config. To put your own in front
+    # of it without rebuilding:
+    # volumes:
+    #   - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost/index.html"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s

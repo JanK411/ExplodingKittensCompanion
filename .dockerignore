@@ -1,0 +1,28 @@
+# The image builds the web app only, so the context is shared/ + webApp/ + the Gradle
+# files. kotlin-js-store/ stays in: its yarn.lock is what keeps the npm side reproducible.
+
+androidApp/
+iosApp/
+
+.git
+.github
+.gradle
+.idea
+.kotlin
+**/build/
+build/
+node_modules/
+
+# Points at an SDK path on the host machine, which does not exist in the image.
+local.properties
+
+# ~14 MB of rulebook PDFs that are source material, not build input.
+docs/
+
+*.iml
+*.jks
+*.keystore
+
+Dockerfile
+.dockerignore
+docker-compose.yml
