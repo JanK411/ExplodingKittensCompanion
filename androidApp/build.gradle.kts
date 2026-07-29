@@ -10,6 +10,9 @@ kotlin {
         jvmTarget = JvmTarget.JVM_11
     }
 }
+
+// Set on CI only. Without it, builds fall back to the auto-generated debug keystore.
+val keystoreFile = providers.environmentVariable("KEYSTORE_FILE")
 dependencies {
     implementation(project(":shared"))
 
@@ -35,13 +38,31 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    signingConfigs {
+        if (keystoreFile.isPresent) {
+            create("upload") {
+                storeFile = file(keystoreFile.get())
+                storePassword = providers.environmentVariable("KEYSTORE_PASSWORD").get()
+                keyAlias = providers.environmentVariable("KEY_ALIAS").get()
+                keyPassword = providers.environmentVariable("KEY_PASSWORD").get()
+            }
+        }
+    }
     buildTypes {
+        debug {
+            if (keystoreFile.isPresent) {
+                signingConfig = signingConfigs.getByName("upload")
+            }
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            if (keystoreFile.isPresent) {
+                signingConfig = signingConfigs.getByName("upload")
+            }
         }
     }
     compileOptions {
