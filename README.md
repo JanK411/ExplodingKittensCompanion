@@ -6,7 +6,7 @@ You're playing Exploding Kittens with a deck printed in Polish, and half the tab
 read Polish. Somebody is holding a card and everyone is guessing. This app tells them what
 it does, in a language they actually read.
 
-Two taps to set up — *which language is the deck?*, *which language do you read?* — and then
+Two taps to set up — *which box is on the table?*, *which language do you read?* — and then
 all nine card types sit on one screen, no scrolling and no searching. Each tile shows the
 name as printed on the physical card, so you can match what's in your hand, with your own
 language underneath. Tap one for a plain-language summary, the edge cases people actually
@@ -74,18 +74,21 @@ is a good place to start reading.
 ## Adding a language
 
 This is the contribution the project most wants, and it's meant to be easy — no UI work, just
-text. Four steps:
+text and one small drawing. Five steps:
 
 1. Drop the official rulebook PDF into [`docs/rules-source/`](./docs/rules-source).
 2. Add an entry to the `Language` enum — a two-letter code, and the language's name written
    *in that language*.
 3. Copy `data/cards/CardsEnglish.kt` to `Cards<YourLanguage>.kt`, translate the nine cards,
    and register it in `CardCatalog`.
-4. Add a block to `UiStrings` for the handful of strings the app says on its own behalf.
+4. Add a block to `UiStrings` for the handful of strings the app says on its own behalf,
+   including the title printed on that edition's box.
+5. Add a flag next to the existing `ic_flag_*.xml` drawables and point `Language.flag` at it.
 
 `CardCatalogTest` checks that every card in every language has a name, a summary, details and
-rulebook text, and that no two cards in a language share a name. Miss a step and the build
-tells you which one, rather than the app quietly showing a blank tile.
+rulebook text, that no two cards in a language share a name, and that the app's own strings
+are all filled in; the flag is checked by the compiler. Miss a step and the build tells you
+which one, rather than the app quietly showing a blank tile.
 
 ## CI
 

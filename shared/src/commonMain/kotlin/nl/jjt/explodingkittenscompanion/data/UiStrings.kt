@@ -8,9 +8,17 @@ package nl.jjt.explodingkittenscompanion.data
  * handed to another player.
  */
 data class UiStrings(
+    /**
+     * The title printed on that edition's box. Strictly edition data rather than an app
+     * string, but [UiStrings] is already the one block you edit per language (see CLAUDE.md,
+     * "Adding a language") and a fifth per-language registry costs more than it explains.
+     */
+    val gameTitle: String,
     /** Cycled through all languages on the first setup step, before we know who is holding the phone. */
-    val iUnderstand: String,
-    val gameLanguageQuestion: String,
+    val whichGameQuestion: String,
+    val translateToQuestion: String,
+    /** Subtitle of the "my language is the deck's language" row at the bottom of step two. */
+    val sameLanguageHint: String,
     val gameLabel: String,
     /** Rendered after the count, e.g. "4 in the deck". */
     val inDeck: String,
@@ -21,8 +29,10 @@ data class UiStrings(
     companion object {
         private val byLanguage = mapOf(
             Language.ENGLISH to UiStrings(
-                iUnderstand = "I understand English",
-                gameLanguageQuestion = "Which language is the game?",
+                gameTitle = "Exploding Kittens",
+                whichGameQuestion = "Which game are you playing?",
+                translateToQuestion = "Translate the cards into…",
+                sameLanguageHint = "I read English — just explain the cards",
                 gameLabel = "Game",
                 inDeck = "in the deck",
                 readMore = "Read more",
@@ -30,8 +40,10 @@ data class UiStrings(
                 fromTheRulebook = "From the rulebook",
             ),
             Language.DUTCH to UiStrings(
-                iUnderstand = "Ik versta Nederlands",
-                gameLanguageQuestion = "In welke taal is het spel?",
+                gameTitle = "Exploding Kittens",
+                whichGameQuestion = "Welk spel speel je?",
+                translateToQuestion = "Vertaal de kaarten naar…",
+                sameLanguageHint = "Ik lees Nederlands — leg de kaarten gewoon uit",
                 gameLabel = "Spel",
                 inDeck = "in de stapel",
                 readMore = "Lees meer",
@@ -39,8 +51,10 @@ data class UiStrings(
                 fromTheRulebook = "Uit de spelregels",
             ),
             Language.GERMAN to UiStrings(
-                iUnderstand = "Ich verstehe Deutsch",
-                gameLanguageQuestion = "In welcher Sprache ist das Spiel?",
+                gameTitle = "Exploding Kittens",
+                whichGameQuestion = "Welches Spiel spielst du?",
+                translateToQuestion = "Karten übersetzen nach…",
+                sameLanguageHint = "Ich lese Deutsch — erklär mir einfach die Karten",
                 gameLabel = "Spiel",
                 inDeck = "im Stapel",
                 readMore = "Mehr lesen",
@@ -48,8 +62,10 @@ data class UiStrings(
                 fromTheRulebook = "Aus der Spielregel",
             ),
             Language.POLISH to UiStrings(
-                iUnderstand = "Rozumiem po polsku",
-                gameLanguageQuestion = "W jakim języku jest gra?",
+                gameTitle = "Wybuchające Kotki",
+                whichGameQuestion = "W którą grę grasz?",
+                translateToQuestion = "Przetłumacz karty na…",
+                sameLanguageHint = "Czytam po polsku — po prostu wyjaśnij karty",
                 gameLabel = "Gra",
                 inDeck = "w talii",
                 readMore = "Czytaj więcej",

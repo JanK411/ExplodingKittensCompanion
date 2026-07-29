@@ -38,7 +38,11 @@ class CardCatalogTest {
     @Test
     fun everyLanguageHasUiStrings() {
         for (language in Language.entries) {
-            assertTrue(UiStrings[language].iUnderstand.isNotBlank(), "$language has no UI strings")
+            val strings = UiStrings[language]
+            assertTrue(strings.gameTitle.isNotBlank(), "$language has no box title")
+            assertTrue(strings.whichGameQuestion.isNotBlank(), "$language has no game question")
+            assertTrue(strings.translateToQuestion.isNotBlank(), "$language has no translate question")
+            assertTrue(strings.sameLanguageHint.isNotBlank(), "$language has no same-language hint")
         }
     }
 

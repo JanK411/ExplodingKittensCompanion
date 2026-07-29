@@ -47,9 +47,10 @@ fun App() {
             ) { (game, mine) ->
                 if (game == null || mine == null) {
                     SetupScreen(
-                        understood = mine,
-                        onUnderstoodPicked = { understood = it },
+                        gameLanguage = game,
                         onGamePicked = { gameLanguage = it },
+                        onUnderstoodPicked = { understood = it },
+                        onBack = { gameLanguage = null },
                     )
                 } else {
                     CardGridScreen(

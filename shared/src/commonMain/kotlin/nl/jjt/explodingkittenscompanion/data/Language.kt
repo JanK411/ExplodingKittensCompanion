@@ -9,7 +9,7 @@ package nl.jjt.explodingkittenscompanion.data
  *
  * To add a language: add an entry here, add a `Cards<Language>.kt` next to the others and
  * register it in [CardCatalog], then add a block to [UiStrings]. `CardCatalogTest` fails
- * until all three are done.
+ * until all three are done, and the compiler asks for a flag in `ui/LanguageStyle.kt`.
  */
 enum class Language(val code: String, val nativeName: String) {
     ENGLISH("EN", "English"),

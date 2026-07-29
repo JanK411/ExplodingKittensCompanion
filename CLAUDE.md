@@ -54,23 +54,31 @@ the five cat cards collapse into `CAT_CARD`.
 
 ### Adding a language
 
-Three edits, all enforced by `CardCatalogTest` (an incomplete translation fails the build
-rather than rendering a blank tile):
+Five edits. The first three are enforced by `CardCatalogTest` (an incomplete translation
+fails the build rather than rendering a blank tile), the last two by the compiler:
 
 1. Add an entry to `Language` (`code` = two-letter switcher label, `nativeName` written in
    that language itself).
 2. Add `data/cards/Cards<Language>.kt` and register it in `CardCatalog.byLanguage`.
-3. Add a block to `UiStrings.byLanguage`.
+3. Add a block to `UiStrings.byLanguage` — including `gameTitle`, the title printed on that
+   edition's box.
+4. Add a flag drawable (`ic_flag_<code>.xml`, 24×16 viewport, multi-coloured, never tinted).
+5. Add a branch to `Language.flag` in `ui/LanguageStyle.kt`.
 
-Also drop the rulebook PDF into `docs/rules-source/`.
+Also drop the rulebook PDF into `docs/rules-source/`. The setup screen's box accents come
+from a wrapping list, so a new language needs no colour decision.
 
 ## Language handling
 
 Two independent language dimensions, both explicit in-app state:
 
-- **game language** — what the deck on the table is printed in; picked once in setup.
-- **understood** — what the player reads; switchable in one tap from both the top bar and
-  the detail sheet, because the phone gets handed around mid-game.
+- **game language** — what the deck on the table is printed in; picked first in setup, from a
+  grid of boxes rather than a language list.
+- **understood** — what the player reads; picked second, and switchable in one tap from both
+  the top bar and the detail sheet, because the phone gets handed around mid-game.
+
+Game first, and the two steps look nothing alike, because when both were the same four-button
+question people read the second one as the first tap not having registered.
 
 App strings live in `UiStrings`, **not** in `composeResources` string resources. That is
 deliberate: resource strings follow the device locale, but the language here is an explicit

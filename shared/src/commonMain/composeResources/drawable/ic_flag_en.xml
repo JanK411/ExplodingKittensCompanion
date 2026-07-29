@@ -1,0 +1,30 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="16dp"
+    android:viewportWidth="24"
+    android:viewportHeight="16">
+    <!--
+      Every band is an explicit polygon whose corners land on the flag's own edges: a
+      <clip-path> would be the obvious way to trim the diagonals, but it is the one vector
+      feature that is not reliably supported across our targets.
+    -->
+    <path
+        android:fillColor="#012169"
+        android:pathData="M0,0 L24,0 L24,16 L0,16 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M2.89,0 L24,14.08 L24,16 L21.12,16 L0,1.92 L0,0 Z
+                          M0,14.08 L21.12,0 L24,0 L24,1.92 L2.89,16 L0,16 Z" />
+    <path
+        android:fillColor="#C8102E"
+        android:pathData="M1.44,0 L24,15.04 L24,16 L22.56,16 L0,0.96 L0,0 Z
+                          M0,15.04 L22.56,0 L24,0 L24,0.96 L1.44,16 L0,16 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M9.33,0 L14.67,0 L14.67,16 L9.33,16 Z
+                          M0,5.33 L24,5.33 L24,10.67 L0,10.67 Z" />
+    <path
+        android:fillColor="#C8102E"
+        android:pathData="M10.4,0 L13.6,0 L13.6,16 L10.4,16 Z
+                          M0,6.4 L24,6.4 L24,9.6 L0,9.6 Z" />
+</vector>
