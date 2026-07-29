@@ -20,12 +20,16 @@ kotlin {
     }
 
     js {
-        browser()
+        browser {
+            testTask { useKarma { useFirefoxHeadless() } }
+        }
     }
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser()
+        browser {
+            testTask { useKarma { useFirefoxHeadless() } }
+        }
     }
 
     android {
