@@ -1,44 +1,100 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Web.
+# Exploding Kittens Companion
 
-* [/iosApp](./iosApp/iosApp) contains an iOS application. Even if you’re sharing your UI with Compose Multiplatform, you
-  need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+**Someone at the table can't read the deck. This app fixes that.**
 
-* [/shared](./shared/src) is for code that will be shared across your Compose Multiplatform applications. It contains
-  several subfolders:
-    - [commonMain](./shared/src/commonMain/kotlin) is for code that’s common for all targets.
-    - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name. For
-      example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-      the [iosMain](./shared/src/iosMain/kotlin) folder would be the right place for such calls. Similarly, if you want
-      to edit the Desktop (JVM) specific part, the [jvmMain](./shared/src/jvmMain/kotlin)
-      folder is the appropriate location.
+You're playing Exploding Kittens with a deck printed in Polish, and half the table doesn't
+read Polish. Somebody is holding a card and everyone is guessing. This app tells them what
+it does, in a language they actually read.
 
-### Running the apps
+Two taps to set up — *which language is the deck?*, *which language do you read?* — and then
+all nine card types sit on one screen, no scrolling and no searching. Each tile shows the
+name as printed on the physical card, so you can match what's in your hand, with your own
+language underneath. Tap one for a plain-language summary, the edge cases people actually
+argue about, and the verbatim rulebook paragraph if the argument keeps going.
 
-Use the run configurations provided by the run widget in your IDE's toolbar. You can also use these commands and
-options:
+The phone gets handed around a lot during a game, so switching the reading language costs one
+tap and never closes the card you had open.
 
-- Android app: `./gradlew :androidApp:assembleDebug`
-- Web app:
-    - Wasm target (faster, modern browsers): `./gradlew :webApp:wasmJsBrowserDevelopmentRun`
-    - JS target (slower, supports older browsers): `./gradlew :webApp:jsBrowserDevelopmentRun`
-- iOS app: open the [/iosApp](./iosApp) directory in Xcode and run it from there.
-
-### Running tests
-
-Use the run button in your IDE's editor gutter, or run tests using Gradle tasks:
-
-- Android tests: `./gradlew :shared:testAndroidHostTest`
-- Web tests:
-    - Wasm target: `./gradlew :shared:wasmJsTest`
-    - JS target: `./gradlew :shared:jsTest`
-- iOS tests: `./gradlew :shared:iosSimulatorArm64Test`
+**Languages:** English · Nederlands · Deutsch · Polski
+**Runs on:** Android · iOS · the web
 
 ---
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html),
-[Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform/#compose-multiplatform),
-[Kotlin/Wasm](https://kotl.in/wasm/)…
+## Getting it running
 
-We would appreciate your feedback on Compose/Web and Kotlin/Wasm in the public Slack
-channel [#compose-web](https://slack-chats.kotlinlang.org/c/compose-web). If you face any issues, please report them
-on [YouTrack](https://youtrack.jetbrains.com/newIssue?project=CMP).
+You need a JDK (21 is what CI uses). Everything else the Gradle wrapper fetches itself.
+
+```bash
+./gradlew :webApp:wasmJsBrowserDevelopmentRun   # quickest look — opens in your browser
+./gradlew :webApp:jsBrowserDevelopmentRun       # same thing, for older browsers
+./gradlew :androidApp:assembleDebug             # APK in androidApp/build/outputs/apk/debug/
+```
+
+For iOS, open [`iosApp/`](./iosApp) in Xcode and hit run.
+
+If you're in IntelliJ IDEA or Android Studio, the run widget in the toolbar has
+configurations for all of these already.
+
+## Tests
+
+The test suite lives in `commonMain`'s sibling `commonTest`, so it runs unchanged on every
+target. Pick whichever is convenient:
+
+```bash
+./gradlew :shared:testAndroidHostTest      # fastest, and what CI runs
+./gradlew :shared:wasmJsTest               # needs Firefox installed (headless Karma)
+./gradlew :shared:jsTest                   # same
+./gradlew :shared:iosSimulatorArm64Test    # macOS only
+```
+
+## How the project is laid out
+
+```
+shared/      the entire app — Compose UI, card data, everything
+androidApp/  a few lines that call App()
+webApp/      a few lines that call App()
+iosApp/      a few lines that call App()
+docs/        the official rulebooks the card texts come from
+```
+
+All the interesting code is in `shared/src/commonMain`. The three app modules are entry
+points and nothing more — there's no platform-specific UI anywhere in the project.
+
+Inside `shared`:
+
+- `data/` — `Card` (the nine types), `Language`, and `CardCatalog`, which maps a card and a
+  language to its text. Card wording is transcribed from the official rulebooks in
+  [`docs/rules-source/`](./docs/rules-source).
+- `ui/` — the setup screen, the card grid, the detail sheet, and the theme.
+
+The code is commented to explain *why* things are the way they are, so if a decision looks odd,
+the reasoning is usually right there next to it. [`App.kt`](./shared/src/commonMain/kotlin/nl/jjt/explodingkittenscompanion/App.kt)
+is a good place to start reading.
+
+## Adding a language
+
+This is the contribution the project most wants, and it's meant to be easy — no UI work, just
+text. Four steps:
+
+1. Drop the official rulebook PDF into [`docs/rules-source/`](./docs/rules-source).
+2. Add an entry to the `Language` enum — a two-letter code, and the language's name written
+   *in that language*.
+3. Copy `data/cards/CardsEnglish.kt` to `Cards<YourLanguage>.kt`, translate the nine cards,
+   and register it in `CardCatalog`.
+4. Add a block to `UiStrings` for the handful of strings the app says on its own behalf.
+
+`CardCatalogTest` checks that every card in every language has a name, a summary, details and
+rulebook text, and that no two cards in a language share a name. Miss a step and the build
+tells you which one, rather than the app quietly showing a blank tile.
+
+## CI
+
+Every push runs the tests and builds a debug APK, which you can download from the run's
+artifacts in the Actions tab. Release signing is wired to CI secrets; locally you'll get the
+standard debug keystore without configuring anything.
+
+---
+
+Exploding Kittens is a game by Exploding Kittens LLC. This is an unofficial fan-made
+companion — it doesn't reproduce the game, and you'll need a real deck to play. The rulebooks
+in `docs/` are included as the reference the card texts were transcribed from.
